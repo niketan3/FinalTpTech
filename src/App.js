@@ -12,12 +12,14 @@ import "react-data-table-component-extensions/dist/index.css";
 // import "bootstrap/dist/css/bootstrap.css";
 
 import { Modal, Button } from "react-bootstrap";
+import dist from "react-data-table-component-extensions";
 function App() {
   const [Employes, setEmployes] = useState([]);
   const [TpData, settpData] = useState([]);
   const [checkedEmployes, setcheckedEmployes] = useState([]);
   const [deleteOnCheck, setdelteonCheck] = useState([]);
   const [flag, setflag] = useState(0);
+  
   const onClickSubmit = async (event) => {
     // event.preventDefault();
     const url = "https://tpdata1.onrender.com/tp";
@@ -29,46 +31,131 @@ function App() {
       },
     });
     const json = await response.json();
-    console.log(json);
+    
     setEmployes(json);
     settpData(json);
   };
-  const onChange = async (e) => {
-    console.log(e.target.value)
-    var searchData = TpData.filter((item) => {
-      if (
-        item.Division
-          .includes(e.target.value)
-      ) {
-        return item;
+  const onChange = async () => {
+    
+    let division=document.getElementById("division")
+    let district=document.getElementById("district")
+    let post=document.getElementById("post")
+    division=division.value;
+    district=district.value;
+    post=post.value;
+    var searchData=[];
+   
+    if(division!="All")
+    {
+      
+        if(district!="All")
+        {
+          
+          if(post!="All")
+          {
+            for(let i=0;i<TpData.length;i++)
+            {
+              if(TpData[i].Division==division && TpData[i].District==district && TpData[i].Post==post)
+              {
+                searchData.push(TpData[i]);
+              }
+            }
+          }
+          else
+          {
+            for(let i=0;i<TpData.length;i++)
+            {
+              if(TpData[i].Division==division && TpData[i].District==district )
+              {
+                searchData.push(TpData[i]);
+              }
+            }
+          }
+        }
+        else
+        {
+          if(post!="All")
+          {
+            
+            for(let i=0;i<TpData.length;i++)
+            {
+              if(TpData[i].Division==division && post==TpData[i].Post )
+              {
+                searchData.push(TpData[i]);
+              }
+            }
+          }
+          else
+          {
+            
+            for(let i=0;i<TpData.length;i++)
+            {
+      
+              if(TpData[i].Division==division)
+              {
+                searchData.push(TpData[i]);
+              }
+            }
+          }
+        }
+    }
+    else
+    {
+      if(district!="All")
+      {
+        
+        if(post!="All")
+        {
+          
+          for(let i=0;i<TpData.length;i++)
+            {
+              if(TpData[i].District==district && post==TpData[i].Post )
+              {
+                searchData.push(TpData[i]);
+              }
+            }
+        }
+        else
+        {
+          
+          for(let i=0;i<TpData.length;i++)
+            {
+              if(TpData[i].District==district)
+              {
+                searchData.push(TpData[i]);
+              }
+            }
+        }
       }
-    });
+      else
+      {
+        
+        if(post!="All")
+        {
+          for(let i=0;i<TpData.length;i++)
+            {
+              // console.log(TpData[i].Post)
+              if( post==TpData[i].Post )
+              {
+
+                searchData.push(TpData[i]);
+              }
+            }
+        }
+        else
+        {
+          for(let i=0;i<TpData.length;i++)
+            {
+                searchData.push(TpData[i]);
+            }
+        }
+      }
+    }
+  
     setEmployes(searchData);
   };
-  const onChange1 = async (e) => {
-    console.log(e.target.value)
-    var searchData = TpData.filter((item) => {
-      if (
-        item.Post
-          .includes(e.target.value)
-      ) {
-        return item;
-      }
-    });
-    setEmployes(searchData);
-  };
-  const onChange2 = async (e) => {
-    console.log(e.target.value)
-    var searchData = TpData.filter((item) => {
-      if (
-        item.District
-          .includes(e.target.value)
-      ) {
-        return item;
-      }
-    });
-    setEmployes(searchData);
-  };
+  
+
   useEffect(() => {
     onClickSubmit();
     setflag(0);
@@ -77,7 +164,7 @@ function App() {
   const hadnleRowChange = (event) => {
     setcheckedEmployes(event.selectedRows);
 
-    console.log(event);
+  
   };
   const columns = [
     {
@@ -114,7 +201,9 @@ function App() {
       name: (
         <div>
           Post
-          <select name="Director" id="Director" onChange={onChange1}>
+          <select  onChange={onChange} id="post">
+            <option value="All">All</option>
+            <option value="Director">Director</option>
             <option value="JDTP">JDTP</option>
             <option value="DDTP">DDTP</option>
             <option value="ADTP">ADTP</option>
@@ -166,7 +255,8 @@ function App() {
           Division
           {/* <input type="text" onChange={onChange} style={{ width: "80%" }} />
            */}
-          <select name="cars" id="cars" onChange={onChange}>
+          <select name="cars" id="division" onChange={onChange}>
+            <option value="All">All</option>
             <option value="Nagpur">Nagpur</option>
             <option value="Amravati">Amravati</option>
             <option value="Pune">Pune</option>
@@ -188,7 +278,8 @@ function App() {
           District
           {/* <input type="text" onChange={onChange} style={{ width: "80%" }} />
            */}
-          <select name="cars" id="cars" onChange={onChange2}>
+          <select name="cars" id="district" onChange={onChange}>
+            <option value="All">All</option>
             <option value="Ahmednagar">Ahmednagar</option>
             <option value="Acola">Acola</option>
             <option value="Chhatrapati Sambhajinagar">Chhatrapati Sambhajinagar</option>
@@ -205,6 +296,7 @@ function App() {
             <option value="Jalna">Jalna	</option>
             <option value="Kolhapur">Kolhapur	</option>
             <option value="Latur">Latur	</option>
+            <option value="Mumbai">Mumbai	</option>
             <option value="Osmanabad">Osmanabad	</option>
             <option value="Palghar">Palghar	</option>
             <option value="parbhani">parbhani	</option>
@@ -230,22 +322,6 @@ function App() {
       },
     },
 
-    // {
-    //   name: "संबंधितपदावरीलनियुक्तीचामार",
-    //   sortable: false,
-    //   selector: "null",
-    //   // cell: (d) => [
-    //   //   <i
-    //   //     key={d.title}
-    //   //     onClick={handleClick.bind(this, d.title)}
-    //   //     className="first fas fa-pen"
-    //   //   ></i>,
-    //   //   <i
-    //   //     onClick={handleClick.bind(this, d.title)}
-    //   //     className="fas fa-trash-alt"
-    //   //   ></i>
-    //   // ]
-    // },
   ];
 
   const data = Employes;
@@ -256,7 +332,7 @@ function App() {
     data,
   };
   const addNames = () => {
-    console.log(checkedEmployes);
+    
     setEmployes(checkedEmployes);
     setdelteonCheck(checkedEmployes);
     setflag(1);
@@ -335,7 +411,7 @@ function App() {
         {printList}
       </div>
       <div ref={conponentPDF}>
-        <DataTableExtensions {...tableData} print={false} export={false}>
+        <DataTableExtensions {...tableData} print={false} export={false} >
           <DataTable
             actions={[
               {
@@ -351,6 +427,7 @@ function App() {
             defaultSortAsc={true}
             pagination
             highlightOnHover
+            selectableRowsHighlight
             exportHeaders={false}
             selectableRows
             onSelectedRowsChange={hadnleRowChange}
